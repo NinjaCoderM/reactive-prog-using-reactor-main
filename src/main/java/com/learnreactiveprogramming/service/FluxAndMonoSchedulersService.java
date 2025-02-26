@@ -18,11 +18,11 @@ public class FluxAndMonoSchedulersService {
     }
 
     public Flux<String> namesFlux(){
-        return Flux.fromIterable(namesList);
+        return Flux.fromIterable(namesList).log();
     }
 
     public Mono<String> namesMono(){
-        return Mono.just(namesList.getFirst());
+        return Mono.just(namesList.getFirst()).log();
     }
 
     public static void main(String[] args) {
