@@ -18,16 +18,16 @@ public class FluxAndMonoSchedulersService {
     }
 
     public Flux<String> namesFlux(){
-        return Flux.fromIterable(namesList).log();
+        return Flux.fromIterable(namesList);//.log();
     }
 
-    public Mono<String> namesMono(){
-        return Mono.just(namesList.getFirst()).log();
+    public Mono<String> nameMono(){
+        return Mono.just(namesList.getFirst());//.log();
     }
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));
-        service.namesMono().subscribe(name -> System.out.println("Mono name is: " + name));
+        service.nameMono().subscribe(name -> System.out.println("Mono name is: " + name));
     }
 }
