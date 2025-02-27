@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
 
@@ -75,6 +76,18 @@ public class FluxAndMonoSchedulersService {
         var charArray = s.split("");
         return Mono.just(List.of(charArray))
                 .delayElement(Duration.ofSeconds(1));
+    }
+
+    public Flux<String> namesFlux_transform(int stringLength) {
+
+        //e.g. operations used many times and should not be duplicated
+        Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength);
+
+        var namesList = List.of("alex", "ben", "chloe"); // a, l, e , x
+        return Flux.fromIterable(namesList)
+                .transform(filterMap) // gives u the opportunity to combine multiple operations using a single call.
+                .flatMap(this::splitString);
     }
 
     public static void main(String[] args) {

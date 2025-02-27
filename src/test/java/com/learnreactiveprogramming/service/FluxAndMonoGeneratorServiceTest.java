@@ -169,4 +169,23 @@ public class FluxAndMonoGeneratorServiceTest {
 
     }
 
+    @Test
+    void namesFlux_namesFlux_transform() {
+
+        //given
+        int stringLength = 3;
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.namesFlux_transform(stringLength).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "L", "E", "X")
+                .expectNextCount(5)
+                .verifyComplete();
+
+    }
+
+
+
 }
