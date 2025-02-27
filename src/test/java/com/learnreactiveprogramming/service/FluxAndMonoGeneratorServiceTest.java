@@ -70,15 +70,28 @@ public class FluxAndMonoGeneratorServiceTest {
     }
 
     @Test
-    void nameMonoMapFilter_whenResultIsEmpty(){
+    void nameMonoMapFilter_switchDefault(){
+        //given
+        int minLengthName = 5;
+        //when
+        var nameMono = fluxAndMonoSchedulersService.namesMono_map_filter_switchIfDefault(minLengthName);
+        //then
+        StepVerifier.create(nameMono)
+                .expectNext("DEFAULT")
+                .as("Should return DEFAULT")
+                .verifyComplete();
+    }
+
+    @Test
+    void nameMonoMapFilter_whenResultIsDefault(){
         //given
         int minLengthName = 5;
         //when
         var nameMono = fluxAndMonoSchedulersService.namesMono_map_filter(minLengthName);
         //then
         StepVerifier.create(nameMono)
-                .expectNextCount(0)
-                .as("Count should be 0")
+                .expectNext("default")
+                .as("Should return default")
                 .verifyComplete();
     }
 

@@ -44,9 +44,23 @@ public class FluxAndMonoSchedulersService {
     }
 
     public Mono<String> namesMono_map_filter (int minLengthName){
-        return Mono.just(namesList.getFirst())
+        Mono<String> monoVar =namesList.isEmpty()?Mono.empty(): Mono.just(namesList.getFirst());
+        return monoVar
                 .filter(name -> name.length() >= minLengthName)
+                .map(String::toUpperCase)
+                .defaultIfEmpty("default");
+    }
+
+    public Mono<String> namesMono_map_filter_switchIfDefault (int minLengthName){
+        Mono<String> monoVar =namesList.isEmpty()?Mono.empty(): Mono.just(namesList.getFirst());
+        Function<Mono<String>, Mono<String>> transform = name -> name
+                .filter(s -> s.length() >= minLengthName)
                 .map(String::toUpperCase);
+        Mono<String> defaultVar = Mono.just("default")
+                .transform(transform);
+        return monoVar
+                .transform(transform)
+                .switchIfEmpty(defaultVar);
     }
 
     public Mono<List<String>> namesMono_flatmap(int stringLength) {
