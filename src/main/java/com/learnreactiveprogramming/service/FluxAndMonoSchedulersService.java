@@ -48,6 +48,24 @@ public class FluxAndMonoSchedulersService {
                 .map(String::toUpperCase);
     }
 
+    public Mono<List<String>> namesMono_flatmap(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMap(this::splitStringMono); //Mono<List of A, L, E  X>
+//              Wenn man .map(this::splitStringMono) statt .flatMap() benutzt, dann bekommst man ein
+//              Mono<Mono<List<String>>>, also ein verschachteltes Mono – was nicht gewollt ist.
+//              Was macht flatMap?
+//              Es nimmt das innere Mono<List<String>> und gibt es direkt zurück, sodass man am Ende nur noch ein
+//              Mono<List<String>> hat.
+    }
+
+    private Mono<List<String>> splitStringMono(String s) {
+        var charArray = s.split("");
+        return Mono.just(List.of(charArray))
+                .delayElement(Duration.ofSeconds(1));
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));

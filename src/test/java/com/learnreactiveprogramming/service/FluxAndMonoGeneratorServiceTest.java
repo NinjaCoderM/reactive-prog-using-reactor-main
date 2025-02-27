@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 public class FluxAndMonoGeneratorServiceTest {
     FluxAndMonoSchedulersService fluxAndMonoSchedulersService = new FluxAndMonoSchedulersService();
 
@@ -134,4 +136,21 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectNextCount(8)
                 .verifyComplete();
     }
+
+    @Test
+    void namesMono_flatmap() {
+
+        //given
+        int stringLength = 3;
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.namesMono_flatmap(stringLength).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext(List.of("A", "L", "E", "X"))
+                .verifyComplete();
+
+    }
+
 }
