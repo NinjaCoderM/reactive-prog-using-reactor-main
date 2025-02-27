@@ -256,6 +256,51 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void explore_merge() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_merge();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("A", "D", "B", "E", "C", "F")
+                .verifyComplete();
+
+    }
+
+    @Test
+    void explore_mergeWith() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_mergeWith();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("A", "D", "B", "E", "C", "F")
+                .verifyComplete();
+
+    }
+
+    @Test
+    void explore_mergeWith_mono() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_mergeWith_mono();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("A", "B")
+                .verifyComplete();
+
+    }
+
 
 
 

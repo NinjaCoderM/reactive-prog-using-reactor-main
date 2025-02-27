@@ -140,6 +140,25 @@ public class FluxAndMonoSchedulersService {
         return abcMono.concatWith( defFlux);
     }
 
+    public Flux<String> explore_merge() {
+        var abcFlux = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(125));
+        return Flux.merge(abcFlux, defFlux).log();
+    }
+
+    public Flux<String> explore_mergeWith() {
+        var abcFlux = Flux.just("A", "B", "C").delayElements(Duration.ofMillis(100));
+        var defFlux = Flux.just("D", "E", "F").delayElements(Duration.ofMillis(125));
+        return abcFlux.mergeWith(defFlux).log();
+    }
+
+    public Flux<String> explore_mergeWith_mono() {
+        var aMono = Mono.just("A");
+        var bMono = Mono.just("B");
+        return aMono.mergeWith(bMono).log();
+    }
+
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));
