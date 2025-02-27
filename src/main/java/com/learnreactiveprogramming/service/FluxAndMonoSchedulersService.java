@@ -25,6 +25,12 @@ public class FluxAndMonoSchedulersService {
         return Mono.just(namesList.getFirst());//.log();
     }
 
+    public Mono<String> namesMono_map_filter (int minLengthName){
+        return Mono.just(namesList.getFirst())
+                .filter(name -> name.length() >= minLengthName)
+                .map(String::toUpperCase);
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));

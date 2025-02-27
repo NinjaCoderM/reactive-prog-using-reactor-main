@@ -53,4 +53,30 @@ public class FluxAndMonoGeneratorServiceTest {
                 .as("Should have exactly 1 items")
                 .verifyComplete();
     }
+
+    @Test
+    void nameMonoMapFilter(){
+        //given
+        int minLengthName = 3;
+        //when
+        var nameMono = fluxAndMonoSchedulersService.namesMono_map_filter(minLengthName);
+        //then
+        StepVerifier.create(nameMono)
+                .expectNext("ALEX")
+                .as("Should return ALEX")
+                .verifyComplete();
+    }
+
+    @Test
+    void nameMonoMapFilter_whenResultIsEmpty(){
+        //given
+        int minLengthName = 5;
+        //when
+        var nameMono = fluxAndMonoSchedulersService.namesMono_map_filter(minLengthName);
+        //then
+        StepVerifier.create(nameMono)
+                .expectNextCount(0)
+                .as("Count should be 0")
+                .verifyComplete();
+    }
 }
