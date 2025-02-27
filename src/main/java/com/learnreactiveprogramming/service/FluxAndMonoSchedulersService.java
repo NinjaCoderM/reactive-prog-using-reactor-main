@@ -87,7 +87,25 @@ public class FluxAndMonoSchedulersService {
         var namesList = List.of("alex", "ben", "chloe"); // a, l, e , x
         return Flux.fromIterable(namesList)
                 .transform(filterMap) // gives u the opportunity to combine multiple operations using a single call.
+                .flatMap(this::splitString)
+                .defaultIfEmpty("default");
+    }
+
+    public Flux<String> namesFlux_transform_switchIfEmpty(int stringLength) {
+
+        Function<Flux<String>, Flux<String>> filterMap = name -> name.map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
                 .flatMap(this::splitString);
+
+        var defaultFlux = Flux.just("default")
+                .transform(filterMap); //"D","E","F","A","U","L","T"
+
+        var namesList = List.of("alex", "ben", "chloe"); // a, l, e , x
+        return Flux.fromIterable(namesList)
+                .transform(filterMap) // gives u the opportunity to combine multiple operations using a single call.
+                .switchIfEmpty(defaultFlux);
+        //using "map" would give the return type as Flux<Flux<String>
+
     }
 
     public static void main(String[] args) {
