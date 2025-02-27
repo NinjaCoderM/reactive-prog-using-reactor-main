@@ -122,6 +122,24 @@ public class FluxAndMonoSchedulersService {
 
     }
 
+    public Flux<String> exploreConcat(){
+        var abcFlux = Flux.just("A", "B", "C");
+        var defFlux = Flux.just("D", "E", "F");
+        return Flux.concat(abcFlux, defFlux);
+    }
+
+    public Flux<String> exploreConcatWith(){
+        var abcFlux = Flux.just("A", "B", "C");
+        var defFlux = Flux.just("D", "E", "F");
+        return abcFlux.concatWith( defFlux);
+    }
+
+    public Flux<String> exploreConcatWithMono(){
+        var abcMono = Mono.just("A");
+        var defFlux = Flux.just("B", "C");
+        return abcMono.concatWith( defFlux);
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));

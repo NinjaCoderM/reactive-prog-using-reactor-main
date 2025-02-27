@@ -216,6 +216,47 @@ public class FluxAndMonoGeneratorServiceTest {
 
     }
 
+    @Test
+    void namesFlux_exploreConcat() {
+        //given
+
+        //when
+        var concatFlux = fluxAndMonoSchedulersService.exploreConcat();
+
+
+        //then
+        StepVerifier.create(concatFlux)
+                .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFlux_exploreConcatWith() {
+        //given
+
+        //when
+        var concatFlux = fluxAndMonoSchedulersService.exploreConcatWith();
+
+        //then
+        StepVerifier.create(concatFlux)
+                .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFlux_exploreConcatWithMono() {
+        //given
+
+        //when
+        var concatFlux = fluxAndMonoSchedulersService.exploreConcatWithMono();
+
+        //then
+        StepVerifier.create(concatFlux)
+                .expectNext("A", "B", "C")
+                .verifyComplete();
+    }
+
+
 
 
 }
