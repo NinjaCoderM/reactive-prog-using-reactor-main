@@ -33,6 +33,10 @@ public class FluxAndMonoSchedulersService {
         return Flux.fromArray(name.split("")).delayElements(Duration.ofMillis(delay));
     }
 
+    public Flux<String> namesFlux_sync_concatMap(){
+        return Flux.fromIterable(namesList)
+                .concatMap(this::split_withDelay).log();
+    }
 
     public Mono<String> nameMono(){
         return Mono.just(namesList.getFirst());//.log();

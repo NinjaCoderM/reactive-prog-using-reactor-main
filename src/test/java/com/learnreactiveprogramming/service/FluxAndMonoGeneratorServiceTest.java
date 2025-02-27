@@ -108,5 +108,30 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void namesFlux_sync_concatMap() {
+        //given
 
+        //when
+        var namesFlux_async_flatMap = fluxAndMonoSchedulersService.namesFlux_sync_concatMap();
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(a)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(l)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(e)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(x)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(b)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(e)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(n)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(c)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(h)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(l)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(o)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onNext(e)
+        //INFO reactor.Flux.ConcatMapNoPrefetch.1 -- onComplete()
+
+        //then
+        StepVerifier.create(namesFlux_async_flatMap)
+                .expectNext("a","l","e","x")
+                .expectNextCount(8)
+                .verifyComplete();
+    }
 }
