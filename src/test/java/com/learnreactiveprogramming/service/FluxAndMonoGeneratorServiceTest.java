@@ -79,4 +79,34 @@ public class FluxAndMonoGeneratorServiceTest {
                 .as("Count should be 0")
                 .verifyComplete();
     }
+
+
+    @Test
+    void namesFlux_async_flatMap() {
+        //given
+
+        //when
+        var namesFlux_async_flatMap = fluxAndMonoSchedulersService.namesFlux_async_flatMap();
+        //then
+
+//         INFO reactor.Flux.FlatMap.1 -- onNext(b)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(c)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(a)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(h)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(e)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(l)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(l)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(n)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(e)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(o)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(x)
+//         INFO reactor.Flux.FlatMap.1 -- onNext(e)
+
+        StepVerifier.create(namesFlux_async_flatMap)
+                //.expectNext("a","l","e","x")
+                .expectNextCount(12)
+                .verifyComplete();
+    }
+
+
 }

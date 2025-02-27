@@ -3,7 +3,9 @@ package com.learnreactiveprogramming.service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Random;
 
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
 
@@ -20,6 +22,17 @@ public class FluxAndMonoSchedulersService {
     public Flux<String> namesFlux(){
         return Flux.fromIterable(namesList);//.log();
     }
+
+    public Flux<String> namesFlux_async_flatMap(){
+        return Flux.fromIterable(namesList)
+                .flatMap(this::split_withDelay).log();
+    }
+
+    public Flux<String> split_withDelay(String name){
+        var delay = new Random().nextInt(500);
+        return Flux.fromArray(name.split("")).delayElements(Duration.ofMillis(delay));
+    }
+
 
     public Mono<String> nameMono(){
         return Mono.just(namesList.getFirst());//.log();
