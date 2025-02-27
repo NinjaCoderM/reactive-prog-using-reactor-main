@@ -158,6 +158,18 @@ public class FluxAndMonoSchedulersService {
         return aMono.mergeWith(bMono).log();
     }
 
+    public Flux<String> explore_mergeSequential() {
+
+        var abcFlux = Flux.just("A", "B", "C")
+                .delayElements(Duration.ofMillis(100));
+
+        var defFlux = Flux.just("D", "E", "F")
+                .delayElements(Duration.ofMillis(150));
+
+        return Flux.mergeSequential(abcFlux, defFlux).log();
+
+    }
+
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();

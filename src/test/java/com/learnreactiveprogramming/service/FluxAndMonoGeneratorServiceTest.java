@@ -301,6 +301,21 @@ public class FluxAndMonoGeneratorServiceTest {
 
     }
 
+    @Test
+    void explore_mergeSequential() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_mergeSequential();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("A", "B", "C", "D", "E", "F")
+                .verifyComplete();
+
+    }
+
 
 
 
