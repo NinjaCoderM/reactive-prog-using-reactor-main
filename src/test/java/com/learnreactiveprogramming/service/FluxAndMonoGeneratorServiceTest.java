@@ -153,4 +153,20 @@ public class FluxAndMonoGeneratorServiceTest {
 
     }
 
+    @Test
+    void namesMono_flatMapMany() {
+
+        //given
+        int stringLength = 3;
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.namesMono_flatMapMany(stringLength).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "L", "E", "X")
+                .verifyComplete();
+
+    }
+
 }

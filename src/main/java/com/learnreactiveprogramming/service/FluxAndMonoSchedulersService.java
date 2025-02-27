@@ -60,6 +60,17 @@ public class FluxAndMonoSchedulersService {
 //              Mono<List<String>> hat.
     }
 
+    public Flux<String> namesMono_flatMapMany(int stringLength) {
+        return Mono.just("alex")
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > stringLength)
+                .flatMapMany(this::splitString); //Mono<List of A, L, E  X>
+    }
+
+    public Flux<String> splitString(String name){
+        return Flux.fromArray(name.split(""));
+    }
+
     private Mono<List<String>> splitStringMono(String s) {
         var charArray = s.split("");
         return Mono.just(List.of(charArray))
