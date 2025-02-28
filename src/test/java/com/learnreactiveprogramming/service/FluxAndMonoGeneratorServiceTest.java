@@ -375,4 +375,21 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
 
     }
+
+    @Test
+    void namesFlux_map() {
+
+        //given
+        int stringLength = 3;
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.namesFlux_map(stringLength).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                //.expectNext("ALEX", "BEN", "CHLOE")
+                .expectNext("4-ALEX", "5-CHLOE")
+                .verifyComplete();
+
+    }
 }

@@ -197,7 +197,23 @@ public class FluxAndMonoSchedulersService {
         return aMono.zipWith(bMono, (first, second) -> first + second);
     }
 
+    public Flux<String> namesFlux_map(int stringLength) {
+        var namesList = List.of("alex", "ben", "chloe");
+        //return Flux.just("alex", "ben", "chloe");
 
+        //Flux.empty()
+        return Flux.fromIterable(namesList)
+                //.map(s -> s.toUpperCase())
+                .map(String::toUpperCase)
+                .delayElements(Duration.ofMillis(500))
+                .filter(s -> s.length() > stringLength)
+                .map(s -> s.length() + "-" + s)
+                .doOnNext(name -> {
+                    System.out.println("name is : " + name);
+                    name = name.toLowerCase(); // no effect because side effect operator !!!!!
+                })
+                .defaultIfEmpty("default");
+    }
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
