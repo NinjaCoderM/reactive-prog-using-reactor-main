@@ -316,7 +316,63 @@ public class FluxAndMonoGeneratorServiceTest {
 
     }
 
+    @Test
+    void explore_zip() {
 
+        //given
 
+        //when
+        var value = fluxAndMonoSchedulersService.explore_zip().log();
 
+        //then
+        StepVerifier.create(value)
+                .expectNext("AD", "BE", "CF")
+                .verifyComplete();
+
+    }
+
+    @Test
+    void explore_zip_1() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_zip_1().log();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("AD14", "BE25", "CF36")
+                .verifyComplete();
+
+    }
+
+    @Test
+    void explore_zipWith() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_zipWith().log();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("AD", "BE", "CF")
+                .verifyComplete();
+
+    }
+
+    @Test
+    void explore_zipWith_mono() {
+
+        //given
+
+        //when
+        var value = fluxAndMonoSchedulersService.explore_zipWith_mono().log();
+
+        //then
+        StepVerifier.create(value)
+                .expectNext("AB")
+                .verifyComplete();
+
+    }
 }

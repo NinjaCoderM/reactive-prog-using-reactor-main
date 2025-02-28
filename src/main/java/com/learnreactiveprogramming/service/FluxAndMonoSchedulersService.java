@@ -170,6 +170,34 @@ public class FluxAndMonoSchedulersService {
 
     }
 
+    public Flux<String> explore_zip() {
+        var abcFlux = Flux.just("A", "B", "C", "G");
+        var defFlux = Flux.just("D", "E", "F");
+        return Flux.zip(abcFlux, defFlux, (first, second) -> first + second);
+    }
+
+    public Flux<String> explore_zip_1() {
+        var abcFlux = Flux.just("A", "B", "C", "G");
+        var defFlux = Flux.just("D", "E", "F");
+        var oneFlux = Flux.just("1", "2", "3");
+        var fourFlux = Flux.just("4", "5", "6");
+        return Flux.zip(abcFlux, defFlux, oneFlux, fourFlux)
+                .map(t4 -> t4.getT1() + t4.getT2() + t4.getT3() + t4.getT4());
+    }
+
+    public Flux<String> explore_zipWith() {
+        var abcFlux = Flux.just("A", "B", "C", "G");
+        var defFlux = Flux.just("D", "E", "F");
+        return abcFlux.zipWith(defFlux, (first, second) -> first + second);
+    }
+
+    public Mono<String> explore_zipWith_mono() {
+        var aMono = Mono.just("A");
+        var bMono = Mono.just("B");
+        return aMono.zipWith(bMono, (first, second) -> first + second);
+    }
+
+
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
