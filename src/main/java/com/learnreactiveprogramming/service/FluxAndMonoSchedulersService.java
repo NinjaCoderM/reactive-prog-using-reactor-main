@@ -212,6 +212,15 @@ public class FluxAndMonoSchedulersService {
                     System.out.println("name is : " + name);
                     name = name.toLowerCase(); // no effect because side effect operator !!!!!
                 })
+                .doOnSubscribe(s -> {
+                    System.out.println("Subscription  is : " + s);
+                })
+                .doOnComplete(() -> {
+                    System.out.println("Completed sending all the items.");
+                })
+                .doFinally((signalType) -> {
+                    System.out.println("value is : " + signalType);
+                })
                 .defaultIfEmpty("default");
     }
 
