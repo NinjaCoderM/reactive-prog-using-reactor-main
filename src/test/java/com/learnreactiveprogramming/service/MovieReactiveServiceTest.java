@@ -16,8 +16,7 @@ class MovieReactiveServiceTest {
 
     @Test
     void getAllMovies() {
-        Flux<Movie> allMovies = movieReactiveService.getAllMovies();
-        allMovies.subscribe(System.out::println);
+        Flux<Movie> allMovies = movieReactiveService.getAllMovies().log();
         StepVerifier.create(allMovies)
                 .assertNext( movie -> {
                     assertEquals("Batman Begins", movie.getMovie().getName(), "Name of movie should be Batman Begins");
@@ -36,8 +35,7 @@ class MovieReactiveServiceTest {
 
     @Test
     void getMovieById() {
-        Mono<Movie> allMovies = movieReactiveService.getMovieById(1);
-        allMovies.subscribe(System.out::println);
+        Mono<Movie> allMovies = movieReactiveService.getMovieById(1).log();
         StepVerifier.create(allMovies)
                 .assertNext( movie -> {
                     assertEquals("Batman Begins", movie.getMovie().getName(), "Name of movie should be Batman Begins");
