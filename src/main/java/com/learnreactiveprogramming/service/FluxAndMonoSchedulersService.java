@@ -231,6 +231,14 @@ public class FluxAndMonoSchedulersService {
                 .concatWith(Flux.just("D"));
     }
 
+    public Flux<String> explore_onErrorReturn(){
+        return Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception Occurred")))
+                .concatWith(Flux.just("E"))
+                .onErrorReturn("D")
+                .concatWith(Flux.just("F"));
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));
