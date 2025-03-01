@@ -224,6 +224,13 @@ public class FluxAndMonoSchedulersService {
                 .defaultIfEmpty("default");
     }
 
+
+    public Flux<String> exception_flux(){
+        return Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception Occurred")))
+                .concatWith(Flux.just("D"));
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));

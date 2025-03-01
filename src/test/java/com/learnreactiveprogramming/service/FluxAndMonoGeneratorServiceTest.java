@@ -392,4 +392,46 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
 
     }
+
+    @Test
+    void exception_flux(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.exception_flux().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectError(RuntimeException.class)
+                .verify();
+    }
+
+    @Test
+    void exception_flux_1(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.exception_flux().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectError()
+                .verify();
+    }
+
+    @Test
+    void exception_flux_2(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.exception_flux().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectErrorMessage("Exception Occurred")
+                .verify();
+    }
 }
