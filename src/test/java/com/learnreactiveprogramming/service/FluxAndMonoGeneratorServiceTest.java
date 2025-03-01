@@ -447,4 +447,31 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectNext("A", "B", "C", "D", "F")
                 .verifyComplete();
     }
+
+    @Test
+    void explore_onErrorResume(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorResume(new IllegalStateException("Error Occurred")).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C", "D", "E", "F", "H")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_onErrorResume_1(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorResume(new RuntimeException("Error Occurred")).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectError()
+                .verify();
+    }
 }

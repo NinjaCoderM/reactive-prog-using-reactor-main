@@ -1,5 +1,6 @@
 package com.learnreactiveprogramming.service;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -10,6 +11,7 @@ import java.util.function.Function;
 
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
 
+@Slf4j
 public class FluxAndMonoSchedulersService {
 
     static List<String> namesList = List.of("alex", "ben", "chloe");
@@ -237,6 +239,23 @@ public class FluxAndMonoSchedulersService {
                 .concatWith(Flux.just("E"))
                 .onErrorReturn("D")
                 .concatWith(Flux.just("F"));
+    }
+
+    public Flux<String> explore_onErrorResume(Exception e){
+        var recoveryFlux = Flux.just("D", "E", "F");
+        return Flux.just("A", "B", "C")
+                .concatWith(Flux.error(e))
+                .concatWith(Flux.just("G"))
+                .onErrorResume(ex -> {
+                    log.error("Exception is " + ex);
+                    if(ex instanceof IllegalStateException){
+                        return recoveryFlux;
+                    } else {
+                        return Flux.error(ex);
+                    }
+
+                })
+                .concatWith(Flux.just("H"));
     }
 
     public static void main(String[] args) {
