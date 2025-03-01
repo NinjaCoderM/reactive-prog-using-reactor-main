@@ -474,4 +474,17 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectError()
                 .verify();
     }
+
+    @Test
+    void explore_onErrorContinue(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorContinue().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "C", "D")
+                .verifyComplete();
+    }
 }

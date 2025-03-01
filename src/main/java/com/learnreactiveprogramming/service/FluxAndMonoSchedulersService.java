@@ -258,6 +258,22 @@ public class FluxAndMonoSchedulersService {
                 .concatWith(Flux.just("H"));
     }
 
+    public Flux<String> explore_onErrorContinue(){
+        return Flux.just("A", "B", "C")
+                .flatMap(name -> {
+                    if (name.equals("B")) {
+                        return Mono.error(new IllegalStateException("B"));
+                    }
+                    return Mono.just(name);
+                })
+                .concatWith(Flux.just("D"))
+                .onErrorContinue(IllegalStateException.class, /* Optional Recover only from IllegalStateException */(ex, name) -> {
+                    log.error("Exception is " + ex);
+                    log.info("name is {}", name);
+
+                });
+    }
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));
