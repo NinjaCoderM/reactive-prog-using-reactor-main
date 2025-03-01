@@ -290,6 +290,23 @@ public class FluxAndMonoSchedulersService {
                 });
     }
 
+    public Flux<String> explore_doOnError(){
+        return Flux.just("A", "B", "C")
+                .concatWith(Flux.error(new RuntimeException("Exception Occurred")))
+                .concatWith(Flux.just("E"))
+                .doOnError(RuntimeException.class, (e) -> { log.error("Exception is " + e); })
+                .concatWith(Flux.just("F"));
+    }
+
+    public Mono<Object> exception_mono_onErrorReturn() {
+        return Mono.just("B")
+                .map(value -> {
+                    throw new RuntimeException("Exception Occurred");
+                }).onErrorReturn("abc");
+    }
+
+    
+
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
         service.namesFlux().subscribe(name -> System.out.println("Name is: " + name));
