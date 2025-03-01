@@ -531,6 +531,34 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void exception_mono_onErrorContinue() {
+
+        //given
+
+
+        //when
+        var mono = fluxAndMonoSchedulersService.exception_mono_onErrorContinue("reactor");
+
+        //then
+        StepVerifier.create(mono)
+                .expectNext("reactor")
+                .verifyComplete();
+    }
+
+    @Test
+    void exception_mono_onErrorContinue_whenInputabc() {
+
+        //given
+
+
+        //when
+        var mono = fluxAndMonoSchedulersService.exception_mono_onErrorContinue("abc");
+
+        //then
+        StepVerifier.create(mono)
+                .verifyComplete();
+    }
 
 
 

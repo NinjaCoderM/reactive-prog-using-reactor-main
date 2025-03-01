@@ -305,7 +305,19 @@ public class FluxAndMonoSchedulersService {
                 }).onErrorReturn("abc");
     }
 
-    
+    public Mono<String> exception_mono_onErrorContinue(String input){
+        return Mono.just(input)
+                .map(value -> {
+                      if(value.equals("abc"))throw new RuntimeException("Error Occurred " + value);
+                      return value;
+                })
+                .onErrorContinue(RuntimeException.class, (ex, name) -> {
+                    log.error("Exception is " + ex);
+                    log.info("name is {}", name);
+                });
+    }
+
+
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
