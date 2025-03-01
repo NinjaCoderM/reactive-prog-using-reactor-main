@@ -1,5 +1,6 @@
 package com.learnreactiveprogramming.service;
 
+import com.learnreactiveprogramming.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -271,6 +272,21 @@ public class FluxAndMonoSchedulersService {
                     log.error("Exception is " + ex);
                     log.info("name is {}", name);
 
+                });
+    }
+
+    public Flux<String> explore_onErrorMap(){
+        return Flux.just("A", "B", "C")
+                .flatMap(name -> {
+                    if (name.equals("B")) {
+                        return Mono.error(new IllegalStateException("B"));
+                    }
+                    return Mono.just(name);
+                })
+                .concatWith(Flux.just("D"))
+                .onErrorMap(IllegalStateException.class, /* Optional Recover only from IllegalStateException */(ex) -> {
+                    log.error("Exception is " + ex);
+                    return new ServiceException(ex);
                 });
     }
 
