@@ -11,7 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class MovieReactiveServiceTest {
     MovieInfoService movieInfoService = new MovieInfoService();
     ReviewService reviewService = new ReviewService();
-    MovieReactiveService movieReactiveService = new MovieReactiveService(movieInfoService, reviewService);
+    RevenueService revenueService = new RevenueService();
+    MovieReactiveService movieReactiveService = new MovieReactiveService(movieInfoService, reviewService, revenueService);
 
 
     @Test
@@ -43,4 +44,18 @@ class MovieReactiveServiceTest {
                 })
                 .verifyComplete();
     }
+
+    @Test
+    void getMovieByIdWithRevenue() {
+        Mono<Movie> allMovies = movieReactiveService.getMovieByIdWithRevenue(1).log();
+        StepVerifier.create(allMovies)
+                .assertNext( movie -> {
+                    assertEquals("Batman Begins", movie.getMovie().getName(), "Name of movie should be Batman Begins");
+                    assertEquals(2, movie.getReviewList().size(), "Expect 2 reviews");
+                    assertNotNull(movie.getRevenue());
+                })
+                .verifyComplete();
+    }
+
+
 }

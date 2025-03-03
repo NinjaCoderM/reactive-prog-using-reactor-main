@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.Exceptions;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.List;
@@ -17,11 +18,17 @@ import java.util.List;
 public class MovieReactiveService {
     private MovieInfoService movieInfoService ;
     private ReviewService reviewService ;
-    private RevenueService revenueService = new RevenueService();
+    private RevenueService revenueService;
 
     public MovieReactiveService(MovieInfoService movieInfoService, ReviewService reviewService) {
         this.movieInfoService = movieInfoService;
         this.reviewService = reviewService;
+    }
+
+    public MovieReactiveService(MovieInfoService movieInfoService, ReviewService reviewService, RevenueService revenueService) {
+        this.movieInfoService = movieInfoService;
+        this.reviewService = reviewService;
+        this.revenueService = revenueService;
     }
 
     public Flux<Movie> getAllMovies(){
@@ -104,5 +111,14 @@ public class MovieReactiveService {
 //                }
 //        );
         return movieInfoMono.zipWith(reviewsMono, Movie::new);
+    }
+
+    public Mono<Movie> getMovieByIdWithRevenue(int movieInfoId){
+        Mono<MovieInfo> movieInfoMono = movieInfoService.retrieveMovieInfoMonoUsingId(movieInfoId);
+        Mono<List<Review>> reviewsMono = reviewService.retrieveReviewsFlux(movieInfoId).collectList();
+        var revenue = revenueService.getRevenue(movieInfoId);
+        var revenueMono = Mono.fromCallable(() -> revenue).subscribeOn(Schedulers.boundedElastic()); //wrappen um subscribeOn verwenden zu können
+        return movieInfoMono.zipWith(reviewsMono, Movie::new)
+                .zipWith(revenueMono, (movie, revenueItem) -> {movie.setRevenue(revenueItem); return movie;});
     }
 }
