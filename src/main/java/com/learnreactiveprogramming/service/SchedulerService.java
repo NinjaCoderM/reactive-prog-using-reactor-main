@@ -28,4 +28,20 @@ public class SchedulerService {
 
         return namesFlux.mergeWith(namesFlux1);
     }
+
+    public Flux<String> explore_subscribeOn(){
+        var namesFlux = getExternalData() //publishOn is not possible because External Data
+                .subscribeOn(Schedulers.parallel());
+
+        var namesFlux1 = Flux.fromIterable(namesList1)
+                .map(this::upperCase)
+                .subscribeOn(Schedulers.parallel());
+
+        return namesFlux.mergeWith(namesFlux1);
+    }
+
+    private Flux<String> getExternalData() {
+        return Flux.fromIterable(namesList)
+                .map(this::upperCase);
+    }
 }
