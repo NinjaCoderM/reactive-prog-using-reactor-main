@@ -3,6 +3,7 @@ package com.learnreactiveprogramming.service;
 import com.learnreactiveprogramming.domain.Movie;
 import com.learnreactiveprogramming.domain.MovieInfo;
 import com.learnreactiveprogramming.exception.MovieException;
+import com.learnreactiveprogramming.exception.ServiceException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,4 +94,37 @@ class MovieReactiveServiceMockTest {
                 .verify();
         verify(reviewService, times(4)).retrieveReviewsFlux(isA(Long.class));
     }
+
+    @Test
+    void getAllMovies_whenExceptionThrown_retryWhen() {
+        //given
+        var movie = new MovieInfo(98L, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        Mockito.when(movieInfoService.retrieveMoviesFlux()).thenReturn(Flux.just(movie));
+        Mockito.when(reviewService.retrieveReviewsFlux(movie.getMovieInfoId())).thenThrow(new MovieException("TEST"));
+        Flux<Movie> allMovies = movieReactiveService.getAllMoviesRetryWhen().log();
+
+        //then
+        StepVerifier.create(allMovies)
+                .expectError(MovieException.class)
+                .verify();
+        verify(reviewService, times(4)).retrieveReviewsFlux(isA(Long.class));
+    }
+
+    @Test
+    void getAllMovies_whenExceptionThrown_retryWhenFilter() {
+        //given
+        var movie = new MovieInfo(98L, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        Mockito.when(movieInfoService.retrieveMoviesFlux()).thenReturn(Flux.just(movie));
+        Mockito.when(reviewService.retrieveReviewsFlux(movie.getMovieInfoId())).thenThrow(new ServiceException("TEST"));
+        Flux<Movie> allMovies = movieReactiveService.getAllMoviesRetryWhen().log();
+
+        //then
+        StepVerifier.create(allMovies)
+                .expectError(ServiceException.class)
+                .verify();
+        verify(reviewService, times(1)).retrieveReviewsFlux(isA(Long.class));
+    }
+  
 }
