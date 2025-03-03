@@ -126,5 +126,19 @@ class MovieReactiveServiceMockTest {
                 .verify();
         verify(reviewService, times(1)).retrieveReviewsFlux(isA(Long.class));
     }
-  
+    @Test
+    void getAllMoviesRepeat() {
+        //given
+        var movie = new MovieInfo(98L, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+        int repeatTimes = 4;
+        Mockito.when(movieInfoService.retrieveMoviesFlux()).thenReturn(Flux.just(movie));
+        Mockito.when(reviewService.retrieveReviewsFlux(movie.getMovieInfoId())).thenCallRealMethod();
+        Flux<Movie> allMovies = movieReactiveService.getAllMoviesRepeat(repeatTimes).log();
+
+        //then
+        StepVerifier.create(allMovies)
+                .expectNextCount(repeatTimes+1)
+                .verifyComplete();
+        verify(reviewService, times(repeatTimes+1)).retrieveReviewsFlux(isA(Long.class));
+    }
 }

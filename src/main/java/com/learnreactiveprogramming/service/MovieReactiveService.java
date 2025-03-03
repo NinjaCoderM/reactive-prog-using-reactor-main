@@ -73,7 +73,26 @@ public class MovieReactiveService {
                 .retryWhen(retryWhen);
     }
 
+    public Flux<Movie> getAllMoviesRepeat(int repeatTimes){
+        Flux<MovieInfo> movieInfoFlux = movieInfoService.retrieveMoviesFlux();
 
+        Retry retryWhen = Retry.backoff(3, Duration.ofMillis(500))
+                .filter(ex -> ex instanceof MovieException)
+                .onRetryExhaustedThrow(((retryBackoffSpec, retrySignal) -> Exceptions.propagate(retrySignal.failure())));//throws orignal Exception -> MovieException
+
+        return movieInfoFlux.flatMap(
+                        movieInfo -> {
+                            Mono<List<Review>> reviewsMono = reviewService.retrieveReviewsFlux(movieInfo.getMovieInfoId()).collectList();
+                            return reviewsMono.map(reviews -> new Movie(movieInfo, reviews));
+                        }
+                ).onErrorMap((ex) -> {
+                    log.error("Exception is " + ex);
+                    if(ex instanceof ServiceException) throw (ServiceException) ex;
+                    else throw new MovieException(ex.getMessage());
+                })
+                .retryWhen(retryWhen)
+                .repeat(repeatTimes);
+    }
 
     public Mono<Movie> getMovieById(int movieInfoId){
         Mono<MovieInfo> movieInfoMono = movieInfoService.retrieveMovieInfoMonoUsingId(movieInfoId);
