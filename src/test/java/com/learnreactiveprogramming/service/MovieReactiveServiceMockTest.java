@@ -18,6 +18,10 @@ import reactor.test.StepVerifier;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.isA;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 @ExtendWith(MockitoExtension.class)
 class MovieReactiveServiceMockTest {
 
@@ -73,4 +77,20 @@ class MovieReactiveServiceMockTest {
     }
 
 
+
+    @Test
+    void getAllMovies_whenExceptionThrown_retry() {
+        //given
+        var movie = new MovieInfo(98L, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
+
+        Mockito.when(movieInfoService.retrieveMoviesFlux()).thenReturn(Flux.just(movie));
+        Mockito.when(reviewService.retrieveReviewsFlux(movie.getMovieInfoId())).thenThrow(new MovieException("TEST"));
+        Flux<Movie> allMovies = movieReactiveService.getAllMoviesRetry().log();
+
+        //then
+        StepVerifier.create(allMovies)
+                .expectError(MovieException.class)
+                .verify();
+        verify(reviewService, times(4)).retrieveReviewsFlux(isA(Long.class));
+    }
 }
