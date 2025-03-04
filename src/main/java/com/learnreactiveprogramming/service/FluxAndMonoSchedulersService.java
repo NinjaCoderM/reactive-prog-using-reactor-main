@@ -342,7 +342,7 @@ public class FluxAndMonoSchedulersService {
                     .thenAccept(names -> {
                         names.forEach(sink::next);
                     })
-                    .thenRun(sink::complete);
+                    .thenRun(()->sendEvents(sink));
         });
     }
 

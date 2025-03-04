@@ -600,7 +600,7 @@ public class FluxAndMonoGeneratorServiceTest {
 
         //then
         StepVerifier.create(namesFlux)
-                .expectNext("A", "B", "C")
+                .expectNext("A", "B", "C", "A", "B", "C")
                 .verifyComplete();
     }
 
