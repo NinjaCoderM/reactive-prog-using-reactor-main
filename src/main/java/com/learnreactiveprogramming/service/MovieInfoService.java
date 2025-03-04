@@ -31,6 +31,12 @@ public class MovieInfoService {
             .bodyToFlux(MovieInfo.class);
     }
 
+    public  Mono<MovieInfo> retrieveMoviesInfoById_RestClient(long movieId){
+        return webClient.get().uri("/v1/movie_infos/{id}", movieId)
+                .retrieve()
+                .bodyToMono(MovieInfo.class);
+    }
+
     public  Flux<MovieInfo> retrieveMoviesFlux(){
 
         var movieInfoList = List.of(new MovieInfo(100l, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15")),

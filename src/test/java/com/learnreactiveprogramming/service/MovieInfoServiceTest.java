@@ -20,4 +20,14 @@ class MovieInfoServiceTest {
         assertNotNull(movieInfoFlux);
         StepVerifier.create(movieInfoFlux).expectNextCount(7).verifyComplete();
     }
+    @Test
+    void retrieveMoviesInfoById_RestClient() {
+        //given
+        long id = 7;
+        //when
+        var movieInfoMono = movieInfoService.retrieveMoviesInfoById_RestClient(id).log();
+        //then
+        assertNotNull(movieInfoMono);
+        StepVerifier.create(movieInfoMono).expectNextCount(1).verifyComplete();
+    }
 }
