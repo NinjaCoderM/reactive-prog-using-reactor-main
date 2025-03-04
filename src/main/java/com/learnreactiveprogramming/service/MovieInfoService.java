@@ -1,6 +1,11 @@
 package com.learnreactiveprogramming.service;
 
 import com.learnreactiveprogramming.domain.MovieInfo;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -10,6 +15,21 @@ import java.util.List;
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
 
 public class MovieInfoService {
+
+    private WebClient webClient;
+
+    public MovieInfoService(WebClient webClient) {
+        this.webClient = webClient;
+    }
+
+    public MovieInfoService() {
+    }
+
+    public  Flux<MovieInfo> retrieveAllMoviesInfo_RestClient(){
+        return webClient.get().uri("/v1/movie_infos")
+            .retrieve()
+            .bodyToFlux(MovieInfo.class);
+    }
 
     public  Flux<MovieInfo> retrieveMoviesFlux(){
 

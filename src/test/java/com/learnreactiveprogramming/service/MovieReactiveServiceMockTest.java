@@ -50,7 +50,6 @@ class MovieReactiveServiceMockTest {
     @Test
     void getAllMovies() {
         //given
-        var movie = new MovieInfo(98L, "Batman Begins", 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
 
         Mockito.when(movieInfoService.retrieveMoviesFlux()).thenCallRealMethod();
         Mockito.when(reviewService.retrieveReviewsFlux(Mockito.anyLong())).thenCallRealMethod();

@@ -17,6 +17,18 @@ dependencies {
     //log - logback
     implementation("ch.qos.logback:logback-classic:1.5.16")
 
+    //webclient-dependencies
+    implementation 'org.springframework:spring-webflux:6.2.3'
+    implementation 'io.projectreactor.netty:reactor-netty:1.2.3'
+    //jackson dependencies
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.18.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.18.3'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.18.3'
+
+    implementation 'org.springframework:spring-context:6.2.3'
+
     //reactor-debug-agent
     implementation('io.projectreactor:reactor-tools:3.7.3')
 
