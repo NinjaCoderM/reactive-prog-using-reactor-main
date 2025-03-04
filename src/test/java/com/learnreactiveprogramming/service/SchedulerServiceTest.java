@@ -52,4 +52,15 @@ class SchedulerServiceTest {
                 .expectNextCount(3)
                 .verifyComplete();
     }
+    @Test
+    void explore_parallel_usingFlatMap_2(){
+        //given
+        //when
+        var flux = schedulerService.explore_parallel_usingFlatMap_2().log();
+        //then
+        StepVerifier.create(flux)
+                .expectNextCount(6)
+                .verifyComplete();
+    }
+  
 }

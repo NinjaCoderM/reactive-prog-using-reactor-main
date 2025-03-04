@@ -72,4 +72,24 @@ public class SchedulerService {
                 );
 
     }
+
+    public Flux<String> explore_parallel_usingFlatMap_2(){
+        var namesFlux = Flux.fromIterable(namesList)
+                .flatMap(name ->
+                    Mono.just(name)
+                    .map(this::upperCase)
+                    .subscribeOn(Schedulers.parallel())
+                );
+
+        var namesFlux1 = Flux.fromIterable(namesList1)
+                .flatMap(name ->
+                    Mono.just(name)
+                    .map(this::upperCase)
+                    .subscribeOn(Schedulers.parallel())
+                );
+
+        return namesFlux.mergeWith(namesFlux1);
+    }
+
+
 }
