@@ -3,6 +3,7 @@ package com.learnreactiveprogramming.service;
 import com.learnreactiveprogramming.exception.ServiceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
 
@@ -515,6 +516,20 @@ public class FluxAndMonoGeneratorServiceTest {
         //then
         StepVerifier.create(namesFlux)
                 .expectNext("A")
+                .expectError(ServiceException.class)
+                .verify();
+    }
+    @Test
+    void explore_onErrorMap_Debug(){
+        //given
+        IllegalStateException e = new IllegalStateException("Not a valid State");
+        //Hooks.onOperatorDebug();
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorMap_Debug(e).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
                 .expectError(ServiceException.class)
                 .verify();
     }
