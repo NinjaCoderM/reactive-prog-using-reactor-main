@@ -1,11 +1,13 @@
 package com.learnreactiveprogramming.service;
 
+import com.learnreactiveprogramming.exception.ReactorException;
 import com.learnreactiveprogramming.exception.ServiceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
 import reactor.test.scheduler.VirtualTimeScheduler;
+import reactor.tools.agent.ReactorDebugAgent;
 
 import java.time.Duration;
 import java.util.List;
@@ -540,6 +542,23 @@ public class FluxAndMonoGeneratorServiceTest {
         IllegalStateException e = new IllegalStateException("Not a valid State");
         //when
         var namesFlux = fluxAndMonoSchedulersService.explore_onErrorMap_Debug_checkpoint(e).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectError(ServiceException.class)
+                .verify();
+    }
+
+    @Test
+    void explore_onErrorMap_Debug_reactorDebugAgent(){
+        //given
+        ReactorDebugAgent.init();
+        ReactorDebugAgent.processExistingClasses();
+        IllegalStateException e = new IllegalStateException("Not a valid State");
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorMap_Debug(e).log();
 
         //then
         StepVerifier.create(namesFlux)

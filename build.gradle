@@ -29,7 +29,7 @@ dependencies {
 
     implementation 'org.springframework:spring-context:6.2.3'
 
-    //reactor-debug-agent
+    //ractor-tools sind notwendig für reactor-debug-agent !!!
     implementation('io.projectreactor:reactor-tools:3.7.3')
 
     //testing
