@@ -534,6 +534,19 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verify();
     }
 
+    @Test
+    void explore_onErrorMap_Debug_checkpoint(){
+        //given
+        IllegalStateException e = new IllegalStateException("Not a valid State");
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_onErrorMap_Debug_checkpoint(e).log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("A", "B", "C")
+                .expectError(ServiceException.class)
+                .verify();
+    }
 
     @Test
     void explore_doOnError(){

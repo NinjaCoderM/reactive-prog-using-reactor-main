@@ -303,6 +303,17 @@ public class FluxAndMonoSchedulersService {
                 });
     }
 
+    public Flux<String> explore_onErrorMap_Debug_checkpoint(Exception e){
+        return Flux.just("A", "B", "C")
+                .concatWith(Flux.error(e)) // line is not listed in Stacktrace, instead return new ServiceException ist listed
+                //.doOnError(ex -> log.error("Caught exception at this point: ", ex))
+                .checkpoint("Fehler bei Flux")
+                .onErrorMap(IllegalStateException.class, /* Optional Recover only from IllegalStateException */(ex) -> {
+                    log.error("Exception is" + ex);
+                    return new ServiceException(ex);
+                });
+    }
+
     public Flux<String> explore_doOnError(){
         return Flux.just("A", "B", "C")
                 .concatWith(Flux.error(new RuntimeException("Exception Occurred")))
