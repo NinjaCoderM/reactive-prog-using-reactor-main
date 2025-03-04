@@ -4,7 +4,9 @@ import com.learnreactiveprogramming.exception.ServiceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reactor.test.StepVerifier;
+import reactor.test.scheduler.VirtualTimeScheduler;
 
+import java.time.Duration;
 import java.util.List;
 
 public class FluxAndMonoGeneratorServiceTest {
@@ -146,6 +148,21 @@ public class FluxAndMonoGeneratorServiceTest {
 
         //then
         StepVerifier.create(namesFlux_async_flatMap)
+                .expectNext("a","l","e","x")
+                .expectNextCount(8)
+                .verifyComplete();
+    }
+
+    @Test
+    void namesFlux_sync_concatMap_virtualTimer() {
+        //given
+        VirtualTimeScheduler.getOrSet();
+        //when
+        var namesFlux_async_flatMap = fluxAndMonoSchedulersService.namesFlux_sync_concatMap();
+
+        //then
+        StepVerifier.withVirtualTime(()->namesFlux_async_flatMap)
+                .thenAwait(Duration.ofSeconds(10))
                 .expectNext("a","l","e","x")
                 .expectNextCount(8)
                 .verifyComplete();
