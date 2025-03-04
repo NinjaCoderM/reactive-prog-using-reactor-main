@@ -604,4 +604,30 @@ public class FluxAndMonoGeneratorServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void explore_create_mono(){
+        //given
+
+        //when
+        var nameMono = fluxAndMonoSchedulersService.explore_create_mono().log();
+
+        //then
+        StepVerifier.create(nameMono)
+                .expectNext("ALEX")
+                .verifyComplete();
+    }
+
+    @Test
+    void explore_handle(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_handle().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext("ALEX", "CHLOE")
+                .verifyComplete();
+    }
+
 }

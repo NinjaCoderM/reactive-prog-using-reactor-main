@@ -357,6 +357,20 @@ public class FluxAndMonoSchedulersService {
 
     }
 
+    public Mono<String> explore_create_mono(){
+        return Mono.create(sink -> {
+            sink.success("ALEX");
+        });
+    }
+
+    public Flux<String> explore_handle(){
+        return Flux.fromIterable(namesList)
+                .handle((name, sink) -> {
+                    if (name.length() > 3) {
+                        sink.next(name.toUpperCase());
+                    }
+                });
+    }
 
     public static void main(String[] args) {
         FluxAndMonoSchedulersService service = new FluxAndMonoSchedulersService();
