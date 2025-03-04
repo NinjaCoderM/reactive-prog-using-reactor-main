@@ -3,11 +3,13 @@ package com.learnreactiveprogramming.service;
 import com.learnreactiveprogramming.exception.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
@@ -327,7 +329,33 @@ public class FluxAndMonoSchedulersService {
         });
     }
 
+    public static List<String> names(){
+        delay(1000);
+        return List.of("A", "B", "C");
+    }
 
+    public Flux<String> explore_create(){
+        return Flux.create((sink) -> {
+            //names().forEach(sink::next);
+            CompletableFuture
+                    .supplyAsync(() -> names())
+                    .thenAccept(names -> {
+                        names.forEach(sink::next);
+                    })
+                    .thenRun(sink::complete);
+        });
+    }
+
+    public void sendEvents(FluxSink<String> sink){
+
+            CompletableFuture
+                    .supplyAsync(() -> names())
+                    .thenAccept(names -> {
+                        names.forEach(sink::next);
+                    })
+                    .thenRun(sink::complete);
+
+    }
 
 
     public static void main(String[] args) {
