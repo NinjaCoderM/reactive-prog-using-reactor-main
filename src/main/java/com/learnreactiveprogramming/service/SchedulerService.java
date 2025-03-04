@@ -91,5 +91,17 @@ public class SchedulerService {
         return namesFlux.mergeWith(namesFlux1);
     }
 
+    public Flux<String> explore_parallel_usingFlatMapSequential(){
 
+        var nrOfCores = Runtime.getRuntime().availableProcessors();
+        log.info("Number of Cores: {}", nrOfCores);
+
+        return Flux.fromIterable(namesList)
+                .flatMapSequential(name ->
+                    Mono.just(name)
+                    .map(this::upperCase)
+                    .subscribeOn(Schedulers.parallel())
+                );
+
+    }
 }
