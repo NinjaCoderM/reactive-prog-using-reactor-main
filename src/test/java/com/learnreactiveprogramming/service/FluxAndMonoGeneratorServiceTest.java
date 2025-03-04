@@ -523,7 +523,7 @@ public class FluxAndMonoGeneratorServiceTest {
     void explore_onErrorMap_Debug(){
         //given
         IllegalStateException e = new IllegalStateException("Not a valid State");
-        //Hooks.onOperatorDebug();
+        Hooks.onOperatorDebug();
         //when
         var namesFlux = fluxAndMonoSchedulersService.explore_onErrorMap_Debug(e).log();
 
@@ -533,6 +533,7 @@ public class FluxAndMonoGeneratorServiceTest {
                 .expectError(ServiceException.class)
                 .verify();
     }
+
 
     @Test
     void explore_doOnError(){
