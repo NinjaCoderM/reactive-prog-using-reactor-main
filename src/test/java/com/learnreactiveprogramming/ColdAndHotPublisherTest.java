@@ -71,4 +71,38 @@ public class ColdAndHotPublisherTest {
         System.out.println("Third Subscriber is connected");
         delay(10000);
     }
+
+    @Test
+    public void hotPublisherTest_refConnect() {
+        //given
+        var flux = Flux.range(1,12).delayElements(Duration.ofSeconds(1))
+                .doOnCancel(() -> System.out.println("Received Cancel Signal"));
+        //when
+        var hotSource = flux.publish().refCount(2);
+        //then
+        var disbosable = hotSource.subscribe(i -> System.out.println("Subscriber1: " + i));
+        delay(4000);
+        var disbosable2 =hotSource.subscribe(i -> System.out.println("Subscriber2: " + i));
+        System.out.println("Second Subscriber is connected");
+        delay(3000);
+        var disbosable3 =hotSource.subscribe(i -> System.out.println("Subscriber3: " + i));
+        System.out.println("Third Subscriber is connected");
+        delay(1500);
+        disbosable.dispose();
+        System.out.println("First Subscriber is disposed");
+        delay(1500);
+        disbosable2.dispose();
+        System.out.println("Second Subscriber is disposed");
+        delay(1500);
+        disbosable3.dispose();
+        System.out.println("Third Subscriber is disposed");
+        delay(2000);
+        hotSource.subscribe(i -> System.out.println("Subscriber4: " + i));
+        System.out.println("Forth Subscriber is connected");
+        delay(4000);
+        hotSource.subscribe(i -> System.out.println("Subscriber5: " + i));
+        System.out.println("AFTER 3s: Fifth Subscriber is connected");
+        delay(3000);
+        delay(10000);
+    }
 }
