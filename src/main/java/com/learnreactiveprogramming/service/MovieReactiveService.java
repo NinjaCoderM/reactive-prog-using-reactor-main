@@ -20,11 +20,6 @@ public class MovieReactiveService {
     private ReviewService reviewService ;
     private RevenueService revenueService;
 
-    public MovieReactiveService(MovieInfoService movieInfoService, ReviewService reviewService) {
-        this.movieInfoService = movieInfoService;
-        this.reviewService = reviewService;
-    }
-
     public MovieReactiveService(MovieInfoService movieInfoService, ReviewService reviewService, RevenueService revenueService) {
         this.movieInfoService = movieInfoService;
         this.reviewService = reviewService;
@@ -37,6 +32,20 @@ public class MovieReactiveService {
         return movieInfoFlux.flatMap(
                 movieInfo -> {
                     Mono<List<Review>> reviewsMono = reviewService.retrieveReviewsFlux(movieInfo.getMovieInfoId()).collectList();
+                    return reviewsMono.map(reviews -> new Movie(movieInfo, reviews));
+                }
+        ).onErrorMap((ex) -> {
+            log.error("Exception is " + ex);
+            throw new MovieException(ex.getMessage());
+        });
+    }
+
+    public Flux<Movie> getAllMovies_RestClient(){
+        Flux<MovieInfo> movieInfoFlux = movieInfoService.retrieveAllMoviesInfo_RestClient();
+
+        return movieInfoFlux.flatMap(
+                movieInfo -> {
+                    Mono<List<Review>> reviewsMono = reviewService.retrieveReviewsFlux_RestClient(movieInfo.getMovieInfoId()).collectList();
                     return reviewsMono.map(reviews -> new Movie(movieInfo, reviews));
                 }
         ).onErrorMap((ex) -> {
@@ -110,6 +119,12 @@ public class MovieReactiveService {
 //                    return reviewsMono.map(reviews -> new Movie(movieInfo, reviews));
 //                }
 //        );
+        return movieInfoMono.zipWith(reviewsMono, Movie::new);
+    }
+
+    public Mono<Movie> getMovieById_RestClient(int movieInfoId){
+        Mono<MovieInfo> movieInfoMono = movieInfoService.retrieveMoviesInfoById_RestClient(movieInfoId);
+        Mono<List<Review>> reviewsMono = reviewService.retrieveReviewsFlux_RestClient(movieInfoId).collectList();
         return movieInfoMono.zipWith(reviewsMono, Movie::new);
     }
 
