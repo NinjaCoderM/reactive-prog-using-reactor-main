@@ -4,10 +4,12 @@ import jdk.dynalink.linker.ConversionComparator;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.ConnectableFlux;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.time.Duration;
 
 import static com.learnreactiveprogramming.util.CommonUtil.delay;
+import static reactor.core.publisher.Sinks.EmitFailureHandler.FAIL_FAST;
 
 public class ColdAndHotPublisherTest {
    @Test
@@ -32,5 +34,24 @@ public class ColdAndHotPublisherTest {
         delay(4000);
         connectableFlux.subscribe(i -> System.out.println("Subscriber2: " + i));
         delay(10000);
+    }
+
+    @Test
+    public void hotPublisherTest2() {
+       //example from projectreactor.io Reference Guide
+        Sinks.Many<String> hotSource = Sinks.unsafe().many().multicast().directBestEffort();
+
+        Flux<String> hotFlux = hotSource.asFlux().map(String::toUpperCase);
+
+        hotFlux.subscribe(d -> System.out.println("Subscriber 1 to Hot Source: "+d));
+
+        hotSource.emitNext("blue", FAIL_FAST);
+        hotSource.tryEmitNext("green").orThrow();
+
+        hotFlux.subscribe(d -> System.out.println("Subscriber 2 to Hot Source: "+d));
+
+        hotSource.emitNext("orange", FAIL_FAST);
+        hotSource.emitNext("purple", FAIL_FAST);
+        hotSource.emitComplete(FAIL_FAST);
     }
 }
