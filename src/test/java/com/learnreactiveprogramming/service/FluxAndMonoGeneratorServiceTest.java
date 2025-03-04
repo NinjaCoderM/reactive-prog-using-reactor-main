@@ -578,5 +578,17 @@ public class FluxAndMonoGeneratorServiceTest {
     }
 
 
+    @Test
+    void explore_generate(){
+        //given
+
+        //when
+        var namesFlux = fluxAndMonoSchedulersService.explore_generate().log();
+
+        //then
+        StepVerifier.create(namesFlux)
+                .expectNext(2, 4, 6, 8, 10, 12, 14, 16, 18, 20)
+                .verifyComplete();
+    }
 
 }
