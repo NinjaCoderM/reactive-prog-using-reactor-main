@@ -31,4 +31,15 @@ class SchedulerServiceTest {
                 .verifyComplete();
     }
 
+    @Test
+    void explore_parallel(){
+        //given
+        //when
+        var flux = schedulerService.explore_parallel().log();
+        //then
+        StepVerifier.create(flux)
+                .expectNextCount(3)
+                .verifyComplete();
+    }
+
 }
