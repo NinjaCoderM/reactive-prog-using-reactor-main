@@ -54,4 +54,21 @@ public class ColdAndHotPublisherTest {
         hotSource.emitNext("purple", FAIL_FAST);
         hotSource.emitComplete(FAIL_FAST);
     }
+
+    @Test
+    public void hotPublisherTest_autoConnect() {
+        //given
+        var flux = Flux.range(1,10).delayElements(Duration.ofSeconds(1));
+        //when
+        var hotSource = flux.publish().autoConnect(2);
+        //then
+        hotSource.subscribe(i -> System.out.println("Subscriber1: " + i));
+        delay(4000);
+        hotSource.subscribe(i -> System.out.println("Subscriber2: " + i));
+        System.out.println("Second Subscriber is connected");
+        delay(3000);
+        hotSource.subscribe(i -> System.out.println("Subscriber3: " + i));
+        System.out.println("Third Subscriber is connected");
+        delay(10000);
+    }
 }
